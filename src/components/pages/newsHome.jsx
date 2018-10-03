@@ -7,12 +7,36 @@ class NewsHome extends React.Component {
   constructor (props){
     super(props)
     this.state = {
-      articles: []
+      articles: [],
+      pages: 0
     }
+    this.handleClick = this.handleClick.bind(this)
+    this.fetchArticles = this.fetchArticles.bind(this)
+    this.getPagination = this.getPagination.bind(this)
   }
 
   componentDidMount() {
-    fetch('https://newsapi.org/v2/top-headlines?country=us&apiKey=e8a69d8710cb4359b0b6a2d615dfc96f')
+    fetch('https://newsapi.org/v2/everything?q=bitcoin&apiKey=e8a69d8710cb4359b0b6a2d615dfc96f')
+    .then(response => response.json())
+    .then(response => {
+      console.log('response', response)
+      this.setState({
+        articles: response.articles,
+        pages: (response.totalResults)/20
+      })
+    })
+    .catch(error => {
+      console.error(error)
+    })
+  }
+
+  handleClick (e){
+    e.preventDefault()
+    this.fetchArticles(e.target.id)
+  }
+
+  fetchArticles(page) {
+    fetch(`https://newsapi.org/v2/everything?q=bitcoin&apiKey=e8a69d8710cb4359b0b6a2d615dfc96f&page=${page}`)
     .then(response => response.json())
     .then(response => {
       console.log('response', response)
@@ -25,12 +49,22 @@ class NewsHome extends React.Component {
     })
   }
 
+  getPagination () {
+    const { pages } = this.state
+    let buttons = []
+    for(let i=1; i<=pages; i++) {
+      buttons.push(<button key={i} onClick={this.handleClick} id={i}>{i}</button>)
+    }
+    return buttons.map(btn => btn)
+  }
+
   render() {
-    const { articles } = this.state
+    const { articles, pages } = this.state
     console.log("articles", articles)
     return (
       <div className="container">
         <h1>Today's Headlines </h1>
+        {this.getPagination()}
         {articles.map(article => {
           return (
             <div className="e-article-wrapper">

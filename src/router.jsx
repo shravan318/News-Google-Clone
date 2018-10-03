@@ -11,8 +11,8 @@ import ReactDOM from 'react-dom'
 
 // components
 
-import NewsHome from './components//newsHome'
-import NewsSources from './components/source'
+import NewsHome from './components/pages/newsHome'
+import NewsSources from './components/pages/source'
 
 
 const AppRouter = () => {
